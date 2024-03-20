@@ -1,2 +1,2 @@
-# TD1
-Mes programmes Python du TD1 exo1 à 3
+# TDs programmation et structures de données groupe c5
+Mes programmes Python des TDs
