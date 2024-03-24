@@ -100,4 +100,63 @@ coefficients = [4, 0, 3, 1]  # Coefficients du polynôme [4*X**3 + 3*X + 1]
 polynomial = Polynomial(coefficients)
 assert polynomial.__str__() == '1 + 3*X^1 + 4*X^3'
 
+## Exo 6
 
+class Polynomial:
+    def __init__(self, coefficients):
+        self.coefficients = coefficients[::-1]  # prend une liste de coefficients dans l'ordre décroissant des puissances de X
+
+    def __str__(self):
+        degree=len(self.coefficients)-1
+        polynomial_str = ""
+        for i, coeff in enumerate(self.coefficients): #utilisée dans la méthode __str__ pour itérer sur les coefficients du polynôme tout en gardant une trace de l'indice
+            if coeff != 0:
+                if i == 0:
+                    term = str(coeff)
+                else:
+                    if i != degree:
+                        term = f" + {coeff}*X^{i}" 
+                    else :
+                        term = f" + {coeff}*X^{i}" 
+                polynomial_str += term
+        return polynomial_str
+
+    def __add__(self,poly):
+        c1=poly.coefficients
+        c2=self.coefficients
+        l1=min(len(c1),len(c2))
+        l2=max(len(c1),len(c2))
+        c=[0]*l2
+        for k in range (l1):
+            c[k]+=(c1[k]+c2[k])
+        if len(c1)>len(c2):
+            for k in range (l1,l2):
+                c[k]+=c1[k]
+        else :
+            for k in range (l1,l2):
+                c[k]+=c2[k]
+        return Polynomial(c)
+
+    def __deriv__ (self):
+        c = self.coefficients
+        for k in range (len(c)):
+            c[k] = k * c[k]
+        return Polynomial(c)
+
+    def __integrate__(self, constante): # la variable globale constante permet a l'utilisateur de choisir la constante d'intégration
+        c1=self.coefficients
+        c=[constante]+[0]*len(c1)
+        for k in range (1,len(c1)+1):
+            c[k]=c1[k-1]/k
+        return Polynomial(c)               
+
+X = Polynomial ([1,0,4,5])
+Y = Polynomial ([0,2,0,0])
+assert X.__str__() =="5 + 4*X^1 + 1*X^3"
+assert Y.__str__() == " + 2*X^2"
+C = X.__add__(Y)
+assert C.__str__() == "1 + 2*X^1 + 4*X^2 + 5*X^3"
+C = X.__deriv__()
+assert C.__str__() == "3 + 4*X^2"
+C = X.__integrate__(0)
+assert C.__str__() == "0.75 + 2.0*X^2"
